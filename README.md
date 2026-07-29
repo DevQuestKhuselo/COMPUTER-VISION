@@ -8,21 +8,18 @@ Structure
 
 Each chapter/topic lives in its own folder, with one or more .html files inside.
 
-computer-vision/
-├── 01-Foundations/
+---
+computer-vision-notes/
+├── CHAPTER 1/
 │   └── notes.html
-├── 02-filters-and-convolutions/
-│   └── notes.html
-├── 03-edge-detection/
-│   └── notes.html
-├── 04-feature-extraction/
-│   └── notes.html
-├── 05-cnns/
-│   └── notes.html
-├── assets/
-│   └── style.css
+|   └── image pinhole.png
+|   └── noimage pinhole.png
+|   └── pinhole.png
+|   └── lens image.png
+|    
 └── README.md
 
+---
 Folder names are numbered so chapters stay in order as the collection grows. Shared CSS lives in assets/ so individual note pages stay lightweight.
 
 Goals
