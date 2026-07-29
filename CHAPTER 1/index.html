@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+
+    </head>
+
+    <body>
+        <main>
+        <h1> Learning objectives</h1>
+        <ul>
+            <li>Explain how a scene becomes an array: pinhole projection, pixels and subpixels, sampling, quantisation, aliasing, and colour spaces</li>
+            <li>Manipulate tone with point operations: brightness, contrast, gamma, stretches, and histogram equalisation</li>
+            <li>Implement 2D convolution and understand it as the primitive of the whole course</li>
+            <li>Detect edges (Sobel, Canny) and reason about scale via image pyramids</li>
+            <li>Measure how classical features degrade under noise</li>
+            <li>Describe texture with Gabor filters, the MR8 filter bank, and textons</li>
+            <li>Build a Bag-of-Visual-Words classifier and recognise the codebook recipe</li>
+        </ul>
+
+        <p>
+            An image is an array of numbers. A filter is a much smaller array of numbers. Slide the second over the first-multiply, sum, move on- and structure appears: edges, scales, textures.
+            Summarise the responses, cluster the summaries into a vocabulary, count the vocabulary, and you have a classifier. 
+            That pipeline- <i>filter, describe, cluster, count</i> - was the state of the art in computer vision for roughly a decade, and every stage of it was designed by hand.
+        </p>
+        </main>
+
+        <section>
+            <h2>1.1 Image Formation</h2>
+            <hr>
+
+            <article>
+                <h3>1.1.1 The pinhole camera</h3>
+                <p>
+                    Light leaves every point of a scene in every direction. Hold a bare sensor up to it and no image forms: each point of the sensor receives light from every point of the scene, all summed together — <a href="#noimagepinhole">Figure 1.1</a>. 
+                    An image requires <mark style="background-color:aqua;"><i>correspondence</i></mark>: each sensor point receiving light from one scene point only. Much of what goes wrong with images — blur, noise — is correspondence partly lost.
+
+                </p>
+
+                <img src="noimg pinhole.png" alt="The first image from the pinhole section" id="noimagepinhole">
+
+                <p>
+                    The pinhole can provide the <mark style="background-color:aqua;"><i>correspondence</i></mark>.
+                    Place an opaque barrier in front of the sensor and make a small hole. Of all the rays leaving a scene point, only the one aimed at the hole gets through, so each sensor position receives light from a single scene point, and an image forms.
+                    Rays from high scene points travel down through the hole and rays from low points travel up, so the image is inverted — <a href="#imagepinhole"> Figure 1.2</a>.
+                    This is the camera obscura, known for over a thousand years; what was missing until the 1820s was a way to make the image permanent.
+
+                </p>
+
+                <img src="img pinhole.png" alt="The first image from the pinhole section" id="imagepinhole">
+
+                <p>
+                    The hole is called the <strong>aperture</strong>. The idealised point at the centre of the aperture is the <strong>optical centre</strong> — also referred to in the literature as the <i>camera centre</i> or <i>centre of projection</i>; all three terms are used interchangeably.
+                    The <strong>optical axis</strong> is the line that passes through the optical centre and is perpendicular to the sensor. The sensor itself is positioned behind the aperture at a distance equal to the <strong> focal length <i>f</i> </strong>
+                </p>
+
+                <p>
+                    The rays form similar triangles on either side of the optical center. 
+                    In <a href="#pinhole">Figure 1.3</a>, the scene point, its foot on the optical axis, and the optical centre form a triangle with height <i>h</i> and base <i>Z</i>; past the aperture, the same ray forms a second triangle with height <i>h'</i> and base <i>f</i>.
+                    The triangles are similar, so
+                </p>
+
+                <img src="pinhole.png" alt="The geometry of the pinhole camera" id="pinhole">
+
+                <p>
+                    Doubling <i>f</i> doubles <i>h'</i> - zoom. Doubling <i>Z</i> halves it - perspective.
+                    In the widget below, the <i>trace</i> buttons draw both triangles with live numbers.
+                </p>
+
+                <p>
+                    The same triangle also fixes how much of the scene fits on the sensor. 
+                    A sensor of extent <i>h<sub>s</sub></i> has its edge <i>h<sub>s</sub></i>/2 from its optical axis, so the landing there leaves the optical centre at an angle whose tangent is <i>h<sub>s</sub></i>/2<i>f</i>.
+                    Both edges together give the <strong>field of view</strong>:
+                     <pre>
+                         <em>FOV = 2 arctan(<i>h<sub>s</sub> </i>/ 2<i>f</i>)</em>.
+                     </pre>
+                </p>
+
+                <p>
+                    The sensor’s size is fixed by the hardware, so <i>f</i> alone decides it. 
+                    On a 40 mm sensor, a 20 mm lens takes in 90°, a 50 mm lens 44°, and a 120 mm lens only 19°: a long lens magnifies by seeing less. Everything outside that wedge misses the sensor entirely. 
+                    The <i>field of view</i> toggle in the widget below draws the two edge rays, running them backwards from the sensor edges into the scene.
+                </p>
+
+                <p>
+                    An ideal pinhole passes one ray per scene point: sharp, but almost no light. Widening the hole admits a bundle per point, which lands as a disc about the size of the aperture — brighter and blurrier, and in the limit back to <a href="#noimagepinhole">Figure 1.1</a>. 
+                    Shrinking has a floor too: below roughly 0.3 mm, diffraction blurs the image again. 
+                    A lens escapes the compromise by gathering a wide bundle from each scene point and bending it back to a single sensor point <a href="#lensimage">(Figure 1.4)</a> — the brightness of a wide aperture with the sharpness of a pinhole. 
+                    It only works for scene points at the right distance, though; focus and depth of field are the lens’s problems, and we defer them.
+                </p>
+
+                <img src="lens img.png" alt="lens image" id="lensimage">
+                <p>From here on we take the projected image as given. The projection is continuous; making it discrete is the sensor’s job.</p>
+            </article>
+
+            <article>
+                 <h3>1.1.2 From scene to pixels</h3>
+
+                 <p>
+                    The sensor is a grid of tiny light buckets called <strong>photosites</strong>. 
+                    While the shutter is open, each one collects the light that falls on it and reports a single number — more light, a bigger number. 
+                    The continuous image becomes a table of numbers, one per photosite, in rows and columns.
+                 </p>
+
+                 <p>
+                    
+                 </p>
+
+            </article>
+        </section>
+
+        
+        
+    </body>
+</html>
